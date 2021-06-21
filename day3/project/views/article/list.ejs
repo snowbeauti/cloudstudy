@@ -78,8 +78,8 @@
 
                                             <% for(var i = 0;i< data.length;i++){ %> 
                                                 <tr>
-                                                    <td><a href="#"><%=data[i].articleIdx%></a></td>
-                                                    <td><a href="#"><%=data[i].title%></a></td>
+                                                    <td><a href="/article/modify?id=<%=data[i].articleIdx%>"><%=data[i].articleIdx%></a></td>
+                                                    <td><a href="/article/<%=data[i].articleIdx%>"><%=data[i].title%></a></td>
                                                     <td><%=data[i].display%></td>
                                                     <td><%=data[i].writer%></td>
                                                     <td><%=data[i].registDate%></td>

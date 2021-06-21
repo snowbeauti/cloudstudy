@@ -25,6 +25,7 @@ var router = express.Router();
 //});
 
 
+//리스트 불러오기
 router.get('/list', function(req, res, next){ 
 
     //조회된 게시물 목록리스트
@@ -58,6 +59,7 @@ router.get('/list', function(req, res, next){
     res.render('article/list', {data:articleList});
 });
 
+//게시글 작성 get
 router.get('/regist', function(req,res,next){
 
     var article = {
@@ -76,6 +78,9 @@ router.get('/regist', function(req,res,next){
 //브라우저에서 post방식으로 데이터를 전송하는 경우 해당 라우팅메소드가 데이터 수신
 //post('url주소', 처리함수(req,res))
 //사용자가 입력한 게시글 데이터를 DB에 저장하고 결과를 반환한다.
+
+
+//게시글 작성 post
 router.post('/regist', function(req,res){
 
     console.log("백엔드 로그입니다.");
@@ -99,13 +104,105 @@ router.post('/regist', function(req,res){
     //DB저장
 
     //저장후 목록으로 이동
-    return res.render("article/list")
+    return res.render("article/list", {data:[article]})
 });
 
-router.get('/modify', function(req,res,next){
 
-    res.render('article/modify');
+//쿼리 게시글 수정
+router.post('/modify', function(req,res,next){
+
+    //article 1 URL에 포함된 값을 {id} 값으로 추출할떄
+    //req.params.{변수값}으로 추출한다.
+
+
+    //해당글의 고유번호로 DB에서 최근 해당 게시글정보를 조회한다.
+
+    //step1
+    //DB에서 가져온 해당 게시글 정보
+    var articleIdx = req.query.Idx;
+
+    var article = {
+        articleIdx:1,
+        title:"공지사항입니다.",
+        content: "오늘부터 마스크를 벗어도 된다고 합니다. <br>만세...",
+        display: "true",
+        writer : "강창훈",
+        registDate : Date.now()
+    };
+
+    //step3업데이트한 데이터를 최종 db에 반영한다.
+    res.render('article/modify', article);
 });
+
+
+//쿼리 게시글 수정 저장
+router.post('/modifysave', function(req,res,next){
+
+    //article 1 URL에 포함된 값을 {id} 값으로 추출할떄
+    //req.params.{변수값}으로 추출한다.
+
+
+    //해당글의 고유번호로 DB에서 최근 해당 게시글정보를 조회한다.
+
+    //step1
+    //DB에서 가져온 해당 게시글 정보
+    var articleIdx = req.body.articleIdx;
+    
+    //step2
+    //DB에서 가져온 정보를 화면에서 전달된 정보로 수정한다.
+    article.title = req.body.title;
+    article.content = req.body.content;
+    article.display = req.body.display;
+    article.writer = req.body.writer;
+    article.registDate = req.body.registDate;
+
+
+    //step3업데이트한 데이터를 최종 db에 반영한다.
+    console.log(article);
+
+    res.render('article/modify', {data:[]});
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//게시글 수정
+//파라미터 타입 라우팅 메소드는 라우팅 파일 맨 하단에 정의할것
+router.get('/:id', function(req,res,next){
+
+    //article 1 URL에 포함된 값을 {id} 값으로 추출할떄
+    //req.params.{변수값}으로 추출한다.
+
+    //localhost:3000/article/modif?id=1&productcode=aaaa
+    //req.query.키명(id or productcode)으로 전달된 값을 추출할 수 있다.
+    var articleIdx = req.params.id;
+    console.log("전달된 글의 고유번호", articleIdx);
+
+    //해당글의 고유번호로 DB에서 최근 해당 게시글정보를 조회한다.
+
+    //DB에서 가져온 해당 게시글 정보
+    var article = {
+        articleIdx:1,
+        title:"공지사항입니다.",
+        content: "오늘부터 마스크를 벗어도 된다고 합니다. <br>만세...",
+        display: "true",
+        writer : "강창훈",
+        registDate : Date.now()
+    };
+    
+    res.render('article/modify', article);
+});
+
 
 
 //상단에 정의한 router객체를 모듈외부로 노추리킨다.
