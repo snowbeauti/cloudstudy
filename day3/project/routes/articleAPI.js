@@ -38,4 +38,38 @@ router.get('/list', function(req, res, next) {
   res.json(articleList);
 });
 
+//단일 게시글 데이터 제공 API 라우팅 메소드 제공
+router.get("/", function(req,res){
+    var articleIdx = req.query.id;
+
+    //게시글 정보를 조회한다.
+    var article = {
+        articleIdx:3,
+        title:"공지사항3입니다.",
+        content: "리스트가 세개나 있다니 우엑우엑우엑",
+        display: "false",
+        writer : "맞춰봐",
+        registDate : Date.now()
+    }
+    res.json(article);
+
+})
+
+
+router.get("/:id", function(req,res){
+    var articleIdx = req.params.id;
+
+    //게시글 정보를 조회한다.
+    var article = {
+        articleIdx:2,
+            title:"공지사항2입니다.",
+            content: "코로나 끝나라 끝나라 끝나라 우에우엑우엑",
+            display: "true",
+            writer : "누구게",
+            registDate : Date.now()
+        }
+    res.json(article);
+})
+
+
 module.exports = router;
