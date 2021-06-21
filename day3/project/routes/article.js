@@ -25,18 +25,17 @@ var router = express.Router();
 //});
 
 
-
-router.get('/list', function(req,res,next){ 
-    res.render("/article/list");
+router.get('/list', function(req, res, next){ 
+    res.render('article/list.ejs');
 });
 
 router.post('/regist', function(req,res,next){
-    res.render("article/regist");
+    res.render('article/regist');
 });
 
 router.get('/modify', function(req,res,next){
 
-    res.render('/article/modify');
+    res.render('article/modify');
 });
 
 
