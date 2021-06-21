@@ -26,11 +26,80 @@ var router = express.Router();
 
 
 router.get('/list', function(req, res, next){ 
-    res.render('article/list.ejs');
+
+    //조회된 게시물 목록리스트
+    var articleList = [{
+        articleIdx:1,
+        title:"공지사항입니다.",
+        content: "오늘부터 마스크를 벗어도 된다고 합니다. <br>만세...",
+        display: "true",
+        writer : "강창훈",
+        registDate : Date.now()
+        },
+        {
+            articleIdx:2,
+            title:"공지사항2입니다.",
+            content: "코로나 끝나라 끝나라 끝나라 우에우엑우엑",
+            display: "true",
+            writer : "누구게",
+            registDate : Date.now()
+        },
+        {
+            articleIdx:3,
+            title:"공지사항3입니다.",
+            content: "리스트가 세개나 있다니 우엑우엑우엑",
+            display: "false",
+            writer : "맞춰봐",
+            registDate : Date.now()
+        },
+    ];
+
+    //게시글 목록 데이터를 목록 뷰페이지인 List.ejs 페이지에 전달함
+    res.render('article/list', {data:articleList});
 });
 
-router.post('/regist', function(req,res,next){
-    res.render('article/regist');
+router.get('/regist', function(req,res,next){
+
+    var article = {
+        articleIdx:1,
+        title:"공지사항입니다.",
+        content: "오늘부터 마스크를 벗어도 된다고 합니다. <br>만세...",
+        display: "true",
+        writer : "강창훈",
+        registDate : Date.now()
+    };
+
+    //views/article/regist.ejs 뷰파일에 데이터를 전달한다.
+    res.render('article/regist',article);
+});
+
+//브라우저에서 post방식으로 데이터를 전송하는 경우 해당 라우팅메소드가 데이터 수신
+//post('url주소', 처리함수(req,res))
+//사용자가 입력한 게시글 데이터를 DB에 저장하고 결과를 반환한다.
+router.post('/regist', function(req,res){
+
+    console.log("백엔드 로그입니다.");
+
+    //웹브라우저에서 사용자가 입력한 데이터는 req.body 객체에 속성으로 접근한다.
+    //req.body 객체에 속성명은 ui 요소 name 속성값으로 접근한다.
+    console.log("웹브라우저에서 전달된 제목",req.body.title);
+
+    //브라우저에서 사용자가 입력한 데이터로 객체세팅
+    var article = {
+        articleIdx:1,
+        title:req.body.title,
+        content: req.body.content,
+        display: req.body.display,
+        writer : req.body.writer,
+        registDate : Date.now()
+    };
+
+    console.log("DB저장 데이터", article);
+
+    //DB저장
+
+    //저장후 목록으로 이동
+    return res.render("article/list")
 });
 
 router.get('/modify', function(req,res,next){
