@@ -8,12 +8,25 @@ var logger = require('morgan');
 //express-ejs-layouts 
 var expressLayouts = require('express-ejs-layouts');
 
+const cors = require('cors');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var articleRouter = require('./routes/article');
 var articleAPIRouter = require('./routes/articleAPI');
 
 var app = express();
+
+//특정 도메인 주소만 cors허용하기
+const option = {
+  origin:'http://localhost:5000',
+  credentials:true,
+  optionsSuccessStatus:200
+};
+
+//노드 어플리케이션에 cors 기능적용
+//모든 리소스 접근 허용
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,6 +42,8 @@ app.set('layout extractScripts', true);
 
 //노드앱에서 expressLayouts 사용하게 최종 설정
 app.use(expressLayouts);
+
+
 
 
 app.use(logger('dev'));

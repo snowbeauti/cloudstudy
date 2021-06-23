@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 등록</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <td>글제목</td>
+            <td><input type="text" id="title"></td>
+        </tr>
+        <tr>
+            <td>글내용</td>
+            <td><textarea type="text" rows="3" cols="50" id="content"></textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2"><button id="btnSave" onclick="fnSave();">등록</button></td>
+        </tr>
+    </table>
+
+
+        <!--Jequery 라이브러리 참조-->
+        <script src="../js/jquery-3.6.0.min.js"></script>
+
+        <!--개발자 정의 클라이언트 스크립트 코드-->
+        <script>
+
+            function fnSave(){
+                //데이터 등록함수
+                
+                if(document.getElementById("title").value == ""){
+                    alert("제목을 입력해주세요.");
+                    document.getElementById("title").focus();
+                    return false;
+                }
+
+
+                if($("#content").val() == ""){
+                    alert("내용을 입력해주세요.");
+                    $("#content").focus();
+                    return false;
+                }
+           
+
+            //백엔드로 보낼 json데이터 생성
+
+            var article = {
+                "articleIdx" : 8888,
+                "title" : $("#title").val(),
+                "content" : $("#content").val()
+            }
+
+            //백엔드 주소로 데이터를 보내 저장처리한다.
+            $.post("http://localhost:3000/api/article", article).done(function(data){
+                console.log("동록결과데이터", data);
+                alert("등록완료");
+                location.href="./list.html";
+            });
+        }
+        </script>
+</body>
+</html>

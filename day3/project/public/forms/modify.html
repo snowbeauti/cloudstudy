@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <td>글제목</td>
+            <td><input type="text" id="title"></td>
+        </tr>
+        <tr>
+            <td>글내용</td>
+            <td><textarea type="text" rows="3" cols="50" id="content"></textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2"><button id="btnSave" onclick="fnSave();">수정</button></td>
+            <td colspan="2"><button id="btndelete">삭제</button></td>
+        </tr>
+    </table>
+
+
+        <!--Jequery 라이브러리 참조-->
+        <script src="../js/jquery-3.6.0.min.js"></script>
+
+        <!--개발자 정의 클라이언트 스크립트 코드-->
+        <script>
+
+
+            //RegExp >>정규식 url에서 쿼리스트링 키값을 추출해서 반환
+            //naver.com/test>userid=abc&name=이름&age=35
+            //window.location.href > 현재 웹 주소
+            function urlParam(name){
+                var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                if (results==null){
+                return null;
+                }
+                else{
+                return results[1] || 0;
+                }
+            }
+
+            //수정페이지가 로딩이 완료되면
+            //백엔드에서 해당 게시글 번호에 대한 게시글 정보를 조회한다.
+            $(document).ready(function(){
+
+                //현재 페이지 url에서 id값을 추출한다.
+                var articleIdx = urlParam("id");
+                console.log("아이디 키값:", articleIdx);
+
+                //백엔드 단일 게시글 정보조회 API 호출
+                $.get("http://localhost:3000/api/article/"+articleIdx,function(data){
+                    console.log("단일 게시글 정보:",data);
+
+                });
+
+                $("title").val(data.data.title);
+                $("content").val(data.data.content);
+            });
+
+            //데이터 수정함수
+            function fnSave(){
+                //데이터 등록함수
+                
+                if(document.getElementById("title").value == ""){
+                    alert("제목을 입력해주세요.");
+                    document.getElementById("title").focus();
+                    return false;
+                }
+
+
+                if($("#content").val() == ""){
+                    alert("내용을 입력해주세요.");
+                    $("#content").focus();
+                    return false;
+                }
+           
+
+            //백엔드로 보낼 json데이터 생성
+
+            var article = {
+                "articleIdx" : 8888,
+                "title" : $("#title").val(),
+                "content" : $("#content").val()
+            }
+
+            //백엔드 주소로 데이터를 보내 저장처리한다.
+            $.ajax({
+                url:"http://localhost:3000/api/article/",
+                type:"put",
+                data:article,
+                success:function(result){
+                    console.log("수정결과",result);
+                    alert("수정완료");
+                    location.href="list.html";
+                }
+                
+            });
+        }
+        
+
+            //삭제버튼이 클릭되면 실행된다.
+            $("#btndelete").click(function(){
+
+                if(confirm("정말로 삭제하시겠습니까?")){
+
+                    //확인 > 데이터 삭제 api 호출
+
+                    //현재 페이지 url에서 id값을 추출한다.
+                    var articleIdx = urlParam("id");
+                    console.log("아이디 키값:", articleIdx);
+
+
+                    //백엔드 주소로 데이터를 보내 저장처리한다.
+                    $.ajax({
+                    url:"http://localhost:3000/api/article/"+articleIdx,
+                    type:"delete",
+                    data:article,
+                    success:function(result){
+                    console.log("삭제결과데이터",result);
+
+                    if(result.data == "ok"){
+                        alert("삭제완료");
+                        location.href="list.html";
+                    } else{
+                        console.log("백엔드 에러발생");
+                        alert("백엔드 호출 에러가 발생했습니다.");
+                    }
+                   
+                }
+
+
+                }
+            });
+        
+        </script>
+</body>
+</html>
