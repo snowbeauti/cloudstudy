@@ -82,6 +82,19 @@ router.post('/regist',function(req,res){
 });
 
 
+//게시글 수정 페이지 호출
+//async/await 비동기 방식으로 DB 작업하기
+//비동기 방식으로 라우팅 메소드를 호출한다.
+
+router.get('/modify', async(req,res,next)=>{
+
+    //비동기방식으로 단일 게시글 조회하기
+    let article = await Article.findOne({where:{id:req.query.id}});
+    article.viewcount +1;
+
+    const updatedArticleId = await Article.update(article,{where:{id:article.id}});
+    return res.render("/article/modify",{article:article});
+});
 
 //게시글 정보 수정 저장처리 
 router.post('/modify', function(req, res, next) {
@@ -193,6 +206,30 @@ router.get('/ormsample', function(req,res,next){
 
     //res.json(board);
 });
+
+//삭제 비동기방식
+router.get('/remove',async(req,res)=>{
+
+    var articleId = req.params.id;
+
+    var deletedCnt = await Article.destroy({where:{id:articleId}});
+    res.redirect("/article/list");
+
+});
+
+//삭제
+router.get('/remove/:id',function(req,res){
+
+        var articleId = req.params.id;
+
+        Article.destroy({where:{id:articleId}}).then((result)=>{
+            return res.redirect("/article/list");
+        }).catch((err)=>{
+            next(err);
+        });
+
+});
+
 
 
 
