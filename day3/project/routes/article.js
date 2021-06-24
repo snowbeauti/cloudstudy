@@ -9,9 +9,17 @@ var express = require('express');
 //라우팅 객체는 사용자 요청 URL에 대한 처리를 담당하는 각종 기능을 제공한다.
 var router = express.Router();
 
+
+//DB객체를 참조한다.
+var db = require('../models/index');
+
+//DB 프로그래밍을 위한 모델 객체(DB객체의 속성명)를 참조한다.
+//var Board = require('../models/index').Board;
+var Board = db.Board;
+
 //라우팅객체를 이용해 get 방식 호출 라우팅메소드 정의
 //get메소드('사용자가 호출할 url주소',url호출시 실행될 기능(함수)정의)
-//url호출시 실행될 기능(함수)에는 사용자브라우저로부터 전달되는 각종정보(req객체=httprequest객체) 와 
+//url호출시 실행될 기능(함수)에는 사용자브라우저로부터 전달되는 각종정보(req객체=httprequest객체)와
 //함수가 실행후에 브라우저에 전달될 응답객체(res= httpresponse 객체)가 매개변수=파라메터로 전달된다.
 //브라우저에서 데이터를 보낼떄 get방식으로 전달하면 서버 라우팅 메소드에서도 get메소드로 받아야한다.
 //post방식으로 보내면 post로 put방식으로 보내면 put으로 delete으로보내면 delete로 라우팅 메소드를 정의합니다.
@@ -179,6 +187,28 @@ router.post('/modify', function(req, res, next) {
 
 
 
+//모든 게시판 목록 정보 조회
+router.get('/boards', function(res,req,next){
+
+    //게시판 정보 등록하기
+    var board = {
+        boardname:"공지게시판",
+        desc:"설명입니다.",
+        useyn:true,
+        createduid:1
+    }
+    Board.createduid(board);
+
+    //게시판 정보 조회하기
+
+    //게시판 정보 수정하기
+
+    //게시판 정보 삭제하기
+});
+
+
+
+
 //게시글 수정화면 최초호출시 반환
 //파라메터방식으로 라우팅하는 메소드는 라우팅 파일의 맨 하단에 정의할것..
 //localhost:3000/article/1
@@ -202,11 +232,6 @@ router.get('/:id', function(req, res, next) {
 
     res.render('article/modify',article);
 });
-
-
-  
-
-
 
 
 //상단에 정의한 router객체를 모듈외부로 노출시킨다.

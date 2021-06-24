@@ -3,34 +3,42 @@
 /**
  * Module dependencies.
  */
+//노드 app.js 모듈은 노드 어플리케이션의 가장 중요한 모듈 파일로 노드앱의 서비스 환경정보를 세팅하고
+//노드앱 어플리케이션을 관리하는 모듈파일이다.
+
 
 var app = require('../app');
+
+//노드앱에서 디버깅정보를 사용하고 싶을때 참조
 var debug = require('debug')('project:server');
+
+//노드 프레임워크내의 http웹 서버 객체를 참조한다.
+//http객체를 통해 노드 웹사이트를 구성하고 서비스한다.
 var http = require('http');
 
-/**
- * Get port from environment and store in Express.
- */
 
+//노드앱 서비스 포트 지정하기
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
+ //노드앱을 서비스할 웹서버 및 웹사이트 구성
 var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-
+//서버에 올라온 노드앱을 지정한 포트를 통해 사용자 호출을 수신대기한다.
 server.listen(port);
+
+//노드앱에 대한 호출에러가 발생하면 noError 이벤트 처리 함수에 관련 에러정보를 전달한다.
 server.on('error', onError);
+
+//사용자 요청에 대한 인식을 위해 리스닝 이벤트를 걸고 모든 사용자 요청을 모니터링하고
+//모든 사용자 요청에 대한 제어가 가능하다.
 server.on('listening', onListening);
 
 /**
- * Normalize a port into a number, string, or false.
+  기본 포트 설정 함수
  */
 
 function normalizePort(val) {
@@ -50,7 +58,7 @@ function normalizePort(val) {
 }
 
 /**
- * Event listener for HTTP server "error" event.
+  사용자 요청에 대한 서버에서의 에러 감지 및 처리를 위한 에러발생 이벤트 처리 함수
  */
 
 function onError(error) {
@@ -80,7 +88,7 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-
+//모든 사용자 요청에 대한 모니터링 함수(필요시 요청정보 기록 및 디버깅가능)
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string'

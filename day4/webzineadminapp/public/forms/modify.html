@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+<title>게시글 수정</title>
+</head>
+<body>
+<table>
+    <tr>
+        <td>글제목</td>
+        <td><input type="text" id="title"></td>
+    </tr>
+
+    <tr>
+        <td>글내용</td>
+        <td><textarea rows="3" cols="50" id="contents"></textarea></td>
+    </tr>
+
+    <tr>
+        <td colspan="2">
+            <button id="btnSave" onclick="fnSave();">수정</button>
+            <button id="btnDelete">삭제</button>
+        </td>
+    </tr>
+</table>
+
+    <!--Jquery 라이브러리 참조 -->
+    <script src="/js/jquery-3.6.0.min.js"></script>
+
+    <script>
+
+            //url에서 쿼리스트링 키의 값을 추출해서 반환
+            //naver.com/test?userid=eddy&name=강창훈&age=11
+            function urlParam(name){
+                var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                if (results==null){
+                    return null;
+                }
+                else{
+                    return results[1] || 0;
+                }
+            }
+
+        //수정페이지가 로딩이 완료되면
+        //백엔드서 해당 게시글 번호에 대한 게시글정보를 조회한다.
+        $(document).ready(function(){
+
+            //현재 페이지 URL에서 id값을 추출한다.
+            var articleIdx = urlParam("id");
+
+            console.log("아이디 키값:",articleIdx);
+
+            //백엔드 단일 게시글 정보조회 API호출
+            $.get("http://localhost:3000/api/articles/"+articleIdx,function(data){
+                
+                console.log("단일 게시글정보:",data);
+
+                $("#title").val(data.data.title);
+                $("#contents").val(data.data.contents);
+
+            });
+        });
+
+
+
+
+        //데이터 수정함수
+        function fnSave(){
+
+            if(document.getElementById("title").value == ""){
+                alert("제목을 입력해주세요.");
+                document.getElementById("title").focus();
+                return false;
+            }
+
+            if($("#contents").val() == ""){
+                alert("내용을 입력해주세요.");
+                $("#contents").focus();
+                return false;
+            }
+
+            //백엔드 주소로 보낼 json 데이터를 만든다.
+            //UI요소에서 사용자 입력한데이터로 서버로 전송할 JSON데이터 구조의 속성에 데이터를 바인딩한다.
+            var article ={
+                "articleIdx":8888,
+                "title":$("#title").val(),
+                "contents":$("#contents").val()
+            };
+
+            //백엔드 주소로 데이터를 보내 수정처리한다.
+            $.ajax({
+                url:"http://localhost:3000/api/articles",
+                type:"PUT",
+                data:article,
+                success:function(result){
+                    console.log("수정결과데이터:",result);
+                    alert("수정완료");
+                    location.href="./list.html";
+                }
+            });
+
+
+        }
+
+
+        //삭제 버튼이 클릭되면 실행된다.
+        $("#btnDelete").click(function(){
+
+            if(confirm("정말로 삭제하시겠습니까?")){
+
+                //사용자가 확인창에서 OK버튼을 클릭하면 데이터삭제 백엔드 API 호출
+
+                var articleIdx = urlParam("id");
+
+                $.ajax({
+                url:"http://localhost:3000/api/articles/"+articleIdx,
+                type:"DELETE",
+                success:function(result){
+                    console.log("삭제결과데이터:",result);
+
+                    if(result.data == "OK"){
+                        alert("삭제완료");
+                        location.href="./list.html";
+                    }else{
+                        console.error("백엔드 에러발생");
+                        alert("백엔드 호출 에러가 발생했습니다.");
+                    }
+                }
+            });
+
+            }else{
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

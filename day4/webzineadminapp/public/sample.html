@@ -1,0 +1,21 @@
+
+
+<html>
+<head>데이터 전달방식의 이해</head>
+<body>
+
+<a href="http://www.naver.com?userid=eddy&aged=47">네이버 이동</a>
+
+<!--웹브라우저에서 사용자 데이터를 전송하는 일반적인 방식 폼구문 이용-->
+<!-- 폼 태그에 method 속성을 통해 데이터 전송방식을 결정할수 있다. -->
+<!-- 폼 태그에 method 속성으로 get/post/put/patch/delete.....방식을 정의할수있음. -->
+<form method="get" action="http://www.naver.com">
+아이디: <input type="text" value="eddy">
+<br>
+나이: <input type="text" value="47">
+
+<input typed="submit" value="전송(등록)">
+</form>
+
+</body>
+</html>
