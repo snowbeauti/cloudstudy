@@ -22,6 +22,7 @@ var sequelize = require('./models/index.js').sequelize;
 //MVC(Controller=Routh 영역 모듈 참조)
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var memberRouter = require('./routes/member');
 
 //개발자 정의 게시글 라우팅 파일을 참조한다. 
 var articleRouter = require('./routes/article.js');
@@ -83,6 +84,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //라우팅 파일의 기본 호출주소 체계 정의 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/member', memberRouter);
 
 //게시글 라우팅 파일의 기본주소를 article로 시작하게 설정
 //http://localhost:3000/article/~~~~

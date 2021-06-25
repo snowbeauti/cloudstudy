@@ -134,10 +134,10 @@
                 $.ajax({
                 url:"http://localhost:3000/api/articles/"+articleIdx,
                 type:"DELETE",
-                success:function(result){
-                    console.log("삭제결과데이터:",result);
+                success:function(res){
+                    console.log("삭제결과데이터:",res);
 
-                    if(result.data == "OK"){
+                    if(res.data == 1){
                         alert("삭제완료");
                         location.href="./list.html";
                     }else{
@@ -149,6 +149,7 @@
 
             }else{
 
+                console.log("삭제취소완료");
             }
 
         });

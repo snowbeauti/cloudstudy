@@ -119,6 +119,9 @@ router.post('/',function(req,res){
 router.put('/',async(req,res)=>{
 
     try{
+        //updatedId는 적용건수값을 받아온다.
+        
+
         const updatedId = await Article.update({
             title:req.body.title,
             contents:req.body.contents,
@@ -128,11 +131,11 @@ router.put('/',async(req,res)=>{
         },{
             where:{id:req.body.id}
         });
-        if(updatedId == req.body.id){
+        if(updatedId == 1){
             return res.json({code:"200", data:updatedId, msg:"정상적으로 수정완료되었습니다."})
         }else{
             console.log("update 구문 실행, but 데이터 실행안됨");
-            return res.json({code:"500", data:0, msg:"API실행, 데이터 수정안됨"})
+            return res.json({code:"500", data:updatedId, msg:"API실행, 데이터 수정안됨"})
         }
         
     }catch(err){
@@ -239,7 +242,7 @@ router.delete('/:id',async(req,res)=>{
     }catch(err){
         return res.json({code:500,data:affectedCnt,msg:"서버 DB처리 실행 에러"});
     }
-    
+
 });
 /*
 //게시글 삭제 API 라이팅 메소드
