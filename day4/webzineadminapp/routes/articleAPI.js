@@ -1,6 +1,41 @@
 var express = require('express');
 var router = express.Router();
 
+//db참조
+var db = require("../models/index");
+var Article = db.Article;
+
+
+
+
+
+router.get('/',async(req,res,next)=>{
+
+    let result = {code:"", data:[],msg:""};
+
+    try{
+        const articleList = await Article.findAll();
+        result.code="200";
+        result.data=articleList;
+        result.msg="Ok";
+
+        return res.json(result);
+    }catch(err){
+        //에러 무시하기
+        console.log("서버에러 발생");
+        //에러내용인 err을 DB/WAS서버내 File로 기록하거나/SMS/메일로 에러발생 사실을 알림(notification)처리해준다.
+        
+        result.code="500";
+        result.data=[];
+        result.msg="서버에러발생";
+
+        return res.json(result);
+    }
+
+});
+
+
+/*
 //전체 게시글 목록 데이터 반환 라우팅 메소드
 //라우팅주소:  localhost:3000/api/articles
 //반환값: JSON 포맷 게시글 목록
@@ -21,8 +56,40 @@ router.get('/',function(req,res){
     res.json(articleList);
 
 });
+*/
 
 
+router.post('/',async(req,res)=>{
+
+    let article = {
+        title:req.body.title,
+        boardid:1,
+        viewcount:0,
+        contents:req.body.contents,
+        displayyn:req.body.displayyn,
+        ipaddress:req.ip,
+        updateuid:1,
+        createduid:1
+    }
+
+    try{
+    //DB에 해당 데이터를 저장하고 결과를 다시 받아옴
+    const savedArticle = await Article.create(article   );
+        return res.json({
+            code:"200",
+            data:savedArticle,
+            mas:"ok"
+        });
+    }catch(err){
+        return res.json({
+            code:"500",
+            data:[],
+            mas:"서버에러발생"
+        });
+    }
+
+ });
+/*
 //단일 게시글 등록 API 
 //사용자 브라우저(AJAX)에서 단일 게시글 JSON데이터가 전달된다.
 //라우팅 주소: localhost:3000/api/articles
@@ -46,8 +113,36 @@ router.post('/',function(req,res){
     res.json(registData);
 
 });
+*/
 
 
+router.put('/',async(req,res)=>{
+
+    try{
+        const updatedId = await Article.update({
+            title:req.body.title,
+            contents:req.body.contents,
+            displayyn:req.body.displayyn,
+            ipaddress:req.ip,
+            updateduid:1,
+        },{
+            where:{id:req.body.id}
+        });
+        if(updatedId == req.body.id){
+            return res.json({code:"200", data:updatedId, msg:"정상적으로 수정완료되었습니다."})
+        }else{
+            console.log("update 구문 실행, but 데이터 실행안됨");
+            return res.json({code:"500", data:0, msg:"API실행, 데이터 수정안됨"})
+        }
+        
+    }catch(err){
+        
+        return res.json({code:"500", data:0, msg:"서버에러발생"})
+    }
+
+ });
+
+ /*
 //단일게시글 수정 API 라우팅 메소드
 //사용자 브라우저에서 수정된 게시글 JSON데이터가 아래 주소로 전달된다.
 //호출되는 라우팅 주소가 동일해도 라우팅메소드는 메소드유형(get,post,put,delete)이 다르면 주소를 동일하게 사용가능하다.
@@ -74,10 +169,28 @@ router.put('/',function(req,res){
 
     //res.json(updateData);
 });
+*/
 
 
+router.get('/:id',async(req,res)=>{
+    
+    //조회하려는 게시글 고유번호 추출
+    const articleIdx = req.params.id;
+
+    try{
+        const article = await Article.findOne({where:{id:articleIdx}});
+        return res.json({code:200,data:article,msg:"OK"});
+
+    }catch(error){
+        return res.json({code:500,data:{},msg:"서버에러발생 관리자에게 문의바람"});
+    }
+
+});
+
+/*
 //단일 게시글정보 조회 API 라우팅메소드
 //라우팅 주소: localhost:3000/api/articles/1000
+//url 호출체계 내에 대이터를 담아 전달하는 방식을 와일드카드 방식이라 함
 router.get('/:id',function(req,res){
     
     //조회하려는 게시글 고유번호 추출
@@ -103,8 +216,32 @@ router.get('/:id',function(req,res){
 
     return res.json({ code:200,data:article,message:"OK"});
 });
+*/
+
+router.delete('/:id',async(req,res)=>{
+
+    const articleIdx = req.params.id;
 
 
+    try{
+        const affectedCnt = await Article.destroy({
+            where: {id:articleIdx}
+        });
+
+        if(affectedCnt == 1){
+            console.log("데이터 삭제완료");
+            return res.json({code:200,data:affectedCnt,msg:"OK"});
+        } else{
+            console.log("삭제된 데이터가 없습니다.");
+            return res.json({code:500,data:affectedCnt,msg:"조건에 맞는 데이터가 없어, 삭제된 데이터가 없습니다."});
+        }
+
+    }catch(err){
+        return res.json({code:500,data:affectedCnt,msg:"서버 DB처리 실행 에러"});
+    }
+    
+});
+/*
 //게시글 삭제 API 라이팅 메소드
 //사용자 브라우저에서 URL 주소를 통해 삭제하는 게시글 번호를 전달해온다.
 //라우팅주소: localhost:3000/api/articles/1
@@ -125,5 +262,5 @@ router.delete('/:id',function(req,res){
     res.json(result);
 });
 
-
+*/
 module.exports = router;

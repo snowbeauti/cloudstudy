@@ -16,7 +16,12 @@
         <td>글내용</td>
         <td><textarea rows="3" cols="50" id="contents"></textarea></td>
     </tr>
-
+    <tr>
+        <select id="displayyn" class="form-control">
+            <option value="1">게시함</option>
+            <option value="0">게시안함</option>
+        </select>
+    </tr>
     <tr>
         <td colspan="2">
             <button id="btnSave" onclick="fnSave();">수정</button>
@@ -24,6 +29,8 @@
         </td>
     </tr>
 </table>
+
+<input type="hidden" id="articleIdx" name="articleIdx">
 
     <!--Jquery 라이브러리 참조 -->
     <script src="/js/jquery-3.6.0.min.js"></script>
@@ -52,13 +59,19 @@
             console.log("아이디 키값:",articleIdx);
 
             //백엔드 단일 게시글 정보조회 API호출
-            $.get("http://localhost:3000/api/articles/"+articleIdx,function(data){
+            $.get("http://localhost:3000/api/articles/"+articleIdx,function(res){
                 
-                console.log("단일 게시글정보:",data);
+                console.log("단일 게시글정보:",res.data);
 
-                $("#title").val(data.data.title);
-                $("#contents").val(data.data.contents);
+                if(res.code=="200"){
+                $("#articleIdx").val(res.data.id);    
+                $("#title").val(res.data.title);
+                $("#contents").val(res.data.contents);
+                $("#displayyn").val(res.data.displayyn == true ? "1":"0");
 
+            }else{
+                alert("API 호출에러발생 + res.msg");
+            }
             });
         });
 
@@ -83,9 +96,10 @@
             //백엔드 주소로 보낼 json 데이터를 만든다.
             //UI요소에서 사용자 입력한데이터로 서버로 전송할 JSON데이터 구조의 속성에 데이터를 바인딩한다.
             var article ={
-                "articleIdx":8888,
+                "id":$("#articleIdx").val(),
                 "title":$("#title").val(),
-                "contents":$("#contents").val()
+                "contents":$("#contents").val(),
+                "displayyn": $("#displayyn").val()
             };
 
             //백엔드 주소로 데이터를 보내 수정처리한다.
@@ -93,11 +107,15 @@
                 url:"http://localhost:3000/api/articles",
                 type:"PUT",
                 data:article,
-                success:function(result){
-                    console.log("수정결과데이터:",result);
-                    alert("수정완료");
-                    location.href="./list.html";
-                }
+                success:function(res){
+                    if(res.code == 200){
+                        console.log("수정결과데이터:",res);
+                        alert(res.msg);
+                        location.href="./list.html"; 
+                    }else{
+                        alert(에러발생);
+                    }
+                }    
             });
 
 

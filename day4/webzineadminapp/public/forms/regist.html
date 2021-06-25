@@ -16,7 +16,15 @@
         <td>글내용</td>
         <td><textarea rows="3" cols="50" id="contents"></textarea></td>
     </tr>
-
+    <tr>
+        <td>공개여부</td>
+        <td>
+            <select id="displayyn">
+                <option selected value="1">공개</option>
+                <option value="0">비공개</option>
+            </select>
+        </td>
+    </tr>
     <tr>
         <td colspan="2"><button id="btnSave" onclick="fnSave();">등록</button></td>
     </tr>
@@ -47,16 +55,22 @@
             var article ={
                 "articleIdx":8888,
                 "title":$("#title").val(),
-                "contents":$("#contents").val()
+                "contents":$("#contents").val(),    
+                "displayyn":$("#displayyn").val()
             };
 
             //백엔드 주소로 데이터를 보내 저장처리한다.
-            $.post("http://localhost:3000/api/articles",article).done(function(data){
+            $.post("http://localhost:3000/api/articles",article).done(function(res){
                 
-                console.log("등록결과데이터:",data);
+                console.log("등록결과데이터:",res);
+                if(res.code == 200){
+                    alert("등록완료");
+                    location.href="./list.html";
+                }else{
+                    alert("백엔드 호출 에러발생");
+                    console.log("서버에러코드 내용:" + res.code, res.mag);
+                }
 
-                alert("등록완료");
-                //location.href="./list.html";
             });
 
 

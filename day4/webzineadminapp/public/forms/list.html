@@ -48,25 +48,30 @@
 
                 //$.get("백엔드 호출주소",호출결과처리함수);
 
-                $.get('http://localhost:3000/api/articles',function(data){
+                $.get('http://localhost:3000/api/articles',function(response){
                     
-                    console.log("서버에서 전달된 데이터목록:",data);
+                    console.log("서버에서 전달된 데이터목록:",response.data);
 
-                    $.each(data,function(i,item){
+                    if(response.code == 200){
+                        $.each(response.data,function(i,item){
 
-                        //console.log(i+ "번쨰에서 꺼내온 단일데이터:",item);
-                        console.log(`${i}번쨰에서 꺼내온 단일데이터:`,item);
+                            //console.log(i+ "번쨰에서 꺼내온 단일데이터:",item);
+                            console.log(`${i}번쨰에서 꺼내온 단일데이터:`,item);
 
-                        var rowTag =`<tr>
-                                    <td>${item.articleIdx}</td>
-                                    <td><a href="./modify.html?id=${item.articleIdx}">${item.title}</a></td>
-                                    <td>${item.contents}</td>
-                                    </tr>`;
+                            var rowTag =`<tr>
+                                        <td>${item.id}</td>
+                                        <td><a href="./modify.html?id=${item.id}">${item.title}</a></td>
+                                        <td>${item.contents}</td>
+                                        </tr>`;
 
-                        //table태그요소를 찾아서 table태그에 rowtag를 추가한다.
-                        $("#list").append(rowTag);
+                            //table태그요소를 찾아서 table태그에 rowtag를 추가한다.
+                            $("#list").append(rowTag);
 
-                    });
+                        });
+ 
+                    } else{
+                        alert("호출에러가 발생했습니다. 에러내용은 " + response.mag)
+                    }
 
                 });
 
