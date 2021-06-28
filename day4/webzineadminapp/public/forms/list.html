@@ -48,6 +48,7 @@
 
                 //$.get("백엔드 호출주소",호출결과처리함수);
 
+                /*
                 $.get('http://localhost:3000/api/articles',function(response){
                     
                     console.log("서버에서 전달된 데이터목록:",response.data);
@@ -74,6 +75,47 @@
                     }
 
                 });
+                */
+
+
+                //JWT 토큰 기반 백엔드 API 호출하기
+                var storageToken = localStorage.getItem('jsonwebtoken');
+                console.log("저장된 JWT토큰값", storageToken);
+
+                if(storageToken == null){
+                    alert("로그인이 필요한 페이지입니다.");
+                }
+
+                $.ajax({
+                    type:"get",
+                    url:"http://localhost:3000/api/articles",
+                    headers:{
+                        'Authorization' : 'Bearer ' + storageToken
+                    },
+                    dataType:'json',
+                    success:function(result){
+                        console.log("호출결과:",result);
+
+                        $.each(response.data,function(i,item){
+
+                        //console.log(i+ "번쨰에서 꺼내온 단일데이터:",item);
+                        console.log(`${i}번쨰에서 꺼내온 단일데이터:`,item);
+
+                        var rowTag =`<tr>
+                                    <td>${item.id}</td>
+                                    <td><a href="./modify.html?id=${item.id}">${item.title}</a></td>
+                                    <td>${item.contents}</td>
+                                    </tr>`;
+
+                        //table태그요소를 찾아서 table태그에 rowtag를 추가한다.
+                        $("#list").append(rowTag);
+
+                        });
+                    },
+                    error:function(xhr, status, error){
+                        console.error(error);
+                    }
+                })
 
             });
 

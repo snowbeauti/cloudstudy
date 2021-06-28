@@ -4,15 +4,44 @@ var router = express.Router();
 //db참조
 var db = require("../models/index");
 var Article = db.Article;
-
+var jwt = require('jsonwebtoken');
 
 
 
 
 router.get('/',async(req,res,next)=>{
 
+    const token = req.headers.authorization.split('Bearer')[1];
+    console.log("클라이언트에서 전달된 사용자인증 JWT토큰:", token)
+
     let result = {code:"", data:[],msg:""};
 
+
+    if(token == undefined){
+        result.code = "404";
+        result.data = [];
+        result.msg = "인증되지 않은 사용자 입니다.(토큰없음)";
+
+        return res.json(result);
+    } 
+
+
+
+    //토큰에서 사용자정보 추출하기
+    try{
+    var currentMember= jwt.verify(token,process.env.JWT_SECRET); 
+    console.log("API 호출 사용자정보:", currentMember);
+    }catch(err){
+        result.code = "404";
+        result.data = [];
+        result.msg = "인증되지 않은 사용자 입니다.(토큰없음)";
+        
+        return res.json(err);
+    }
+
+
+
+    //예외처리하기
     try{
         const articleList = await Article.findAll();
         result.code="200";
@@ -74,7 +103,7 @@ router.post('/',async(req,res)=>{
 
     try{
     //DB에 해당 데이터를 저장하고 결과를 다시 받아옴
-    const savedArticle = await Article.create(article   );
+    const savedArticle = await Article.create(article);
         return res.json({
             code:"200",
             data:savedArticle,

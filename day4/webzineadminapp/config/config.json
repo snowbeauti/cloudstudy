@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "manager",
-    "database": "sample",
+    "database": "webzine",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },

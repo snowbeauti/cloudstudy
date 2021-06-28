@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>회원정보 수정</title>
+</head>
+<body>
+    
+    <form method="POST" action="/member/modify" enctype="multipart/form-data">
+        <table>
+            <colgroup>
+                <col style="width: 20%">
+                <col style="width: 80%">
+            </colgroup>
+            <tr>
+                <td>메일주소</td>
+                <td><input type="text" id="email"><%=member.email%></td>
+            </tr>
+           <tr>
+               <td>암호</td>
+               <td><input type="password" name="userpwd" id="userpwd"></td>
+           </tr>
+           <tr>
+                <td>닉네임</td>
+                <td><input type="text" name="nickname" id="nickname"><%=member.nickname%></td>
+            </tr>
+            <tr>
+                <td>가입유형</td>
+                <td>
+                    <select name="entrytype" id="entrytype">
+                        <option value="0" <% if(member.entrytype == 0){ %> selected <% } %>>직접가입</option>
+                        <option value="1" <% if(member.entrytype == 1){ %> selected <% } %>>sns가입</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>sns 아이디</td>
+                <td><input type="text" name="snsid" id="snsid"><%=member.snsid%></td>
+            </tr>
+            <tr>
+                <td>실명</td>
+                <td><input type="text" name="username" id="username"><%=member.username%></td>
+            </tr>
+            <tr>
+                <td>전화번호</td>
+                <td><input type="text" name="telephone" id="telephone"><%=member.telephone%></td>
+            </tr>
+            <tr>
+                <td>사진</td>
+                <td><input type="file" name="photo" id="photo"></td>
+            </tr>
+            <tr>
+                <td>가입유형</td>
+                <td>
+                    <select name="usertpye" id="usertpye">
+                        <option value="0"  <% if(member.usertpye == 0){ %> selected <% } %>>일반회원</option>
+                        <option value="1"  <% if(member.usertpye == 1){ %> selected <% } %>>관리자</option>
+                    </select>
+                </td>
+            </tr>       
+        </table>
+        <input type="button" value="회원정보수정" id="btnmodify">
+    </form>
+
+ 
+
+        <script>
+
+            //url에서 쿼리스트링 키의 값을 추출해서 반환
+            function urlParam(name){
+                var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                if (results==null){
+                    return null;
+                }
+                else{
+                    return results[1] || 0;
+                }
+            }
+
+            $(document).ready(function(){
+
+                //현재 페이지 URL에서 id값을 추출한다.
+                var userIdx = urlParam("id");
+
+                console.log("아이디 키값:",userIdx);
+
+                //백엔드 단일 게시글 정보조회 API호출
+                $.get("http://localhost:3000/member/modify/"+userIdx,function(res){
+                    
+                    console.log("단일 게시글정보:",res.data);
+
+                    if(res.code == "200"){
+                        $("#userIdx").val(res.data.id);
+                        $("#email").val(res.data.email);
+                        $("#nickname").val(res.data.nickname);
+                        $("#entrytype").val(res.data.entrytype == "1" ? "1":"0");
+                        $("#snsid").val(res.data.snsid);
+                        $("#username").val(res.data.username);
+                        $("#telephone").val(res.data.telephone);
+                        $("#usertpye").val(res.data.usertpye == true ? "1":"0");
+                    }else{
+                        alert("API 호출에러발생:"+res.msg);
+                    }
+                });
+            });
+
+            $("#btnmodify").click(function(){
+
+                var joinUser={
+                    "email":$("#email").val(),
+                    "userpwd":$("#userpwd").val(),
+                    "nickname":$("#nickname").val(),
+                    "entrytype":$("#entrytype").val(),
+                    "snsid":$("#snsid").val(),
+                    "username":$("#username").val(),
+                    "telephone":$("#telephone").val(),
+                    "photo":$("#photo").val(),
+                    "usertpye":$("#usertpye").val()
+                };
+
+                $.ajax({
+                    url:"http://localhost:3000/member/modify",
+                    type:"POST",
+                    data:joinUser,
+                    success:function(res){
+
+                        if(res.code =="200"){
+                            alert("회원가입 완료");
+
+                        }else{
+                            alert("회원가입 실패");
+                            
+                        }
+                    }
+                });
+            });
+   
+        </script>
+
+</body>
+</html>

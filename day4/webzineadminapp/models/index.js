@@ -34,6 +34,8 @@ db.Board = require('./board.js')(sequelize,Sequelize);
 //article 모델을 DB의 Article 
 db.Article = require('./article.js')(sequelize,Sequelize);
 
+//member 모델을 DB의 Member 
+db.Member = require('./member.js')(sequelize,Sequelize);
 
 //DB관리객체 모듈 출력
 module.exports = db;

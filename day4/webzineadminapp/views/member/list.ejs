@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>신규회원 등록</title>
+</head>
+<body>
+    
+    <form method="POST" action="/member/regist" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <th width="10%">회원번호</th>
+                <th width="40%">메일주소</th>
+                <th width="10%">닉네임/본명</th>
+                <th width="20%">전화번호</th>
+                <th width="10%">가입상태</th>
+                <th width="10%">가입일시</th>
+            </tr>
+            <% for(var i=0; i<data.lenght; i++){%>
+           <tr>              
+               <td><%=data[i].id%></td>
+               <td><%=data[i].email%></td>
+               <td><%=data[i].nickname%>/<%=data[i].username%></td>
+               <td><%=data[i].telephone%></td>  
+               <td><%=data[i].userstate%></td>
+               <td><%=data[i].createdAt%></td>
+            </tr>    
+        <%}%>   
+        </table>
+    </form>
+
+
+
+</body>
+</html>

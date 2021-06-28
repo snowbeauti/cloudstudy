@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 
@@ -16,12 +17,17 @@
         <td>글내용</td>
         <td><textarea rows="3" cols="50" id="contents"></textarea></td>
     </tr>
+
     <tr>
-        <select id="displayyn" class="form-control">
-            <option value="1">게시함</option>
-            <option value="0">게시안함</option>
-        </select>
-    </tr>
+        <td>게시여부</td>
+        <td>
+            <select id="display">
+                <option selected value="1">게시</option>
+                <option value="0">게시안함</option>
+            </select>
+        </td>
+        </tr>
+
     <tr>
         <td colspan="2">
             <button id="btnSave" onclick="fnSave();">수정</button>
@@ -30,7 +36,7 @@
     </tr>
 </table>
 
-<input type="hidden" id="articleIdx" name="articleIdx">
+    <input type="hidden" id="articleIdx">
 
     <!--Jquery 라이브러리 참조 -->
     <script src="/js/jquery-3.6.0.min.js"></script>
@@ -63,15 +69,14 @@
                 
                 console.log("단일 게시글정보:",res.data);
 
-                if(res.code=="200"){
-                $("#articleIdx").val(res.data.id);    
-                $("#title").val(res.data.title);
-                $("#contents").val(res.data.contents);
-                $("#displayyn").val(res.data.displayyn == true ? "1":"0");
-
-            }else{
-                alert("API 호출에러발생 + res.msg");
-            }
+                if(res.code == "200"){
+                    $("#articleIdx").val(res.data.id);
+                    $("#title").val(res.data.title);
+                    $("#contents").val(res.data.contents);
+                    $("#display").val(res.data.displayyn == true ? "1":"0");
+                }else{
+                    alert("API 호출에러발생:"+res.msg);
+                }
             });
         });
 
@@ -99,7 +104,7 @@
                 "id":$("#articleIdx").val(),
                 "title":$("#title").val(),
                 "contents":$("#contents").val(),
-                "displayyn": $("#displayyn").val()
+                "displayyn":$("#display").val()
             };
 
             //백엔드 주소로 데이터를 보내 수정처리한다.
@@ -108,17 +113,17 @@
                 type:"PUT",
                 data:article,
                 success:function(res){
-                    if(res.code == 200){
-                        console.log("수정결과데이터:",res);
+
+                    console.log(res);
+
+                    if(res.code =="200"){
                         alert(res.msg);
-                        location.href="./list.html"; 
+                        location.href ="./list.html";
                     }else{
-                        alert(에러발생);
+                        alert("에러발생");
                     }
-                }    
+                }
             });
-
-
         }
 
 
@@ -137,7 +142,7 @@
                 success:function(res){
                     console.log("삭제결과데이터:",res);
 
-                    if(res.data == 1){
+                    if(res.data === 1){
                         alert("삭제완료");
                         location.href="./list.html";
                     }else{
@@ -149,7 +154,6 @@
 
             }else{
 
-                console.log("삭제취소완료");
             }
 
         });
