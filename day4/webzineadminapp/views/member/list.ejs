@@ -10,31 +10,32 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
-                    <div class="table-responsive">
-
-    <form method="POST" action="/member/regist" enctype="multipart/form-data">
-        <table class="table table-hover">
-            <tr>
-                <th width="10%">회원번호</th>
-                <th width="20%">메일주소</th>
-                <th width="15%">닉네임/본명</th>
-                <th width="15%">전화번호</th>
-                <th width="10%">가입상태</th>
-                <th width="20%">가입일시</th>
-                <th width="10%">회원정보삭제</th>
-            </tr>
-            <% for(var i = 0;i< data.length;i++){ %> 
-                <tr>
-                    <td><a href="#"><%=data[i].id%></a></td>
-                    <td><a href="/member/modify/<%=data[i].id%>"><%=data[i].email%></a></td>
-                    <td><%=data[i].nickname%> / <%=data[i].username%></td>
-                    <td><%=data[i].telephone%></td>
-                    <td><%=data[i].userstate%></td>
-                    <td><%=data[i].createdAt%></td>
-                    <td><a href="/member/delete/<%=data[i].id%>" class="btn btn-primary">회원정보삭제</a></td>
-                </tr>
-            <% } %> 
-        </table>
+                        <form method="POST" action="/member/regist" enctype="multipart/form-data">
+                            <table class="table table-hover">
+                                <tr>
+                                    <th width="10%">회원번호</th>
+                                    <th width="20%">메일주소</th>
+                                    <th width="15%">닉네임/본명</th>
+                                    <th width="15%">전화번호</th>
+                                    <th width="10%">가입상태</th>
+                                    <th width="20%">가입일시</th>
+                                    <th width="10%">회원정보관리</th>
+                                </tr>
+                                <% for(var i = 0;i< data.length;i++){ %> 
+                                    <tr>
+                                        <td><a href="#"><%=data[i].id%></a></td>
+                                        <td><%=data[i].email%></td>
+                                        <td><%=data[i].nickname%> / <%=data[i].username%></td>
+                                        <td><%=data[i].telephone%></td>
+                                        <td><%=data[i].userstate%></td>
+                                        <td><%=data[i].createdAt%></td>
+                                        <td class="row text-center">
+                                            <a href="/member/delete/<%=data[i].id%>" OnClick="return confirm('정말 삭제하시겠습니까?')" id="btndelete" class="btn btn-primary">삭제</a>
+                                            <a href="/member/modify/enter/<%=data[i].id%>" class="btn btn-info">수정</a>
+                                        </td>
+                                    </tr>
+                                <% } %> 
+                            </table>
         <br>
         <div class="text-center">
             <a href="/member/regist" class="btn btn-info">회원정보등록</a>
@@ -45,9 +46,11 @@
 </div>
 </div>
 </div>
-</div>
 
 </div>
 
+<script>
+
+</script>
 </body>
 </html>

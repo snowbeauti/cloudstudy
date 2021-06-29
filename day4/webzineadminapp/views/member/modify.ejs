@@ -27,7 +27,7 @@
 
 <!--우측 콘텐츠 영역 -->
 <div class="wrapper wrapper-content">
-    <form method="post"  action="/member/modify" onsubmit="return fnSave();">
+    <form method="post"  action="/member/modify" onsubmit="return fnSave();" enctype="multipart/form-data">
         <div class="ibox-content m-b-sm border-bottom">
 
             <div class="row">
@@ -77,8 +77,8 @@
                     <div class="form-group">
                         <label class="control-label">가입유형</label>
                         <select name="entrytype" id="entrytype" class="form-control">
-                            <option value="0"<% if(data.entrytype == 0){ %> selected <% } %>>직접가입</option>
-                            <option value="1" <% if(data.entrytype == 1){ %> selected <% } %>>sns가입</option>
+                            <option value="0"<% if(data.entrytype == "0"){ %> selected <% } %>>직접가입</option>
+                            <option value="1" <% if(data.entrytype == "1"){ %> selected <% } %>>sns가입</option>
                         </select>
                     </div>
                 </div>
@@ -87,8 +87,8 @@
                     <div class="form-group">
                         <label class="control-label">회원유형</label>
                         <select name="usertpye" id="usertpye" class="form-control">
-                            <option value="0" <% if(data.usertpye == 0){ %> selected <% } %>>일반회원</option>
-                            <option value="1" <% if(data.usertpye == 1){ %> selected <% } %>>관리자</option>
+                            <option value="0" <% if(data.usertpye == "0"){ %> selected <% } %>>일반회원</option>
+                            <option value="1" <% if(data.usertpye == "1"){ %> selected <% } %>>관리자</option>
                         </select>
                     </div>
                 </div>
@@ -108,16 +108,18 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         <label class="control-label">사진</label>
-                        <input type="file" id="file" name="file" class="form-control">
+                        <input type="file" id="photo" name="photo" class="form-control">
+                        <img src="<%=data.photo%>" style="width: 300px;">
                     </div>
                 </div>
             </div>
 
             <div class="text-center">
                 <input type="submit" class="btn btn-primary" id="btnjoin" value="회원정보수정"/>
+                <a href="#" class="btn btn-primary" id="deletebtn">삭제</a>
                 <a href="/article/list" class="btn btn-info">목록</a>
             </div>
-            <input type="hidden" name="id" value="<%=data.id%>">
+            <input type="hidden" name="id" id="userid" value="<%=data.id%>">
         </div>
 </form>
 
@@ -175,6 +177,14 @@
                 }
                 
             }
+
+            $("#deletebtn").click(function(){
+                if(confirm("정말삭제하시겠습니까?")){
+                location.href="/member/delete/"+$("#userid").val();
+            } else{
+                location.href="/member/list";
+            }
+            });
 /*
             $("#btnmodify").click(function(){
 

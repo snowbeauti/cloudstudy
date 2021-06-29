@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>회원정보 수정</title>
+</head>
+<body>
+      <!--우측 콘텐츠 헤더영역 -->
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>게시글등록</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home/Index">Home</a>
+            </li>
+            <li>
+                <a>게시글정보관리</a>
+            </li>
+            <li class="active">
+                <strong>등록</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+
+<!--우측 콘텐츠 영역 -->
+<div class="wrapper wrapper-content">
+    <form method="post"  action="/member/modify/enter" onsubmit="return fnSave();">
+        <div class="ibox-content m-b-sm border-bottom">
+
+                <div class="row">
+                    <div class="col-sm-12">   
+                        <div class="form-group">
+                        비밀번호를 입력해주세요.
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label">
+                                암호
+                            </label>
+                            <input type="password" id="userpwd" name="userpwd" class="form-control">
+                        </div>
+                    </div>
+                    </div>
+                    <div class="text-center">
+                        <input type="submit" class="btn btn-primary" id="btnjoin" value="회원정보수정"/>
+                        <a href="/article/list" class="btn btn-info">목록</a>
+                    </div>
+            <input type="hidden" name="id" value="<%=data%>">
+        </div>
+</form>
+
+        <script>
+
+            function fnSave(){
+              
+                if($("#userpwd").val() ==""){
+                    alert("암호를 입력해주세요.");
+                    $("#userpwd").focus();
+                    return false;
+                }
+                /*
+                var userInfo={
+                        "id":$("#id").val(),
+                        "userPwd":$("#userPwd").val()
+                    };
+    
+                    $.ajax({
+                    url:"http://localhost:3000/member/modify/enter",
+                    type:"POST",
+                    data:userInfo,
+                    success:function(res){
+    
+                        console.log(res);
+    
+                        if(res.code =="200"){
+                            alert(res.msg);
+    
+                            //location.href ="./list.html";
+                        }else{
+                            alert("에러발생");
+                        }
+                    }
+                });
+                */
+
+            }
+
+        </script>
+
+</body>
+</html>

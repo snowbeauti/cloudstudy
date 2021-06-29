@@ -27,7 +27,7 @@
 
 <!--우측 콘텐츠 영역 -->
 <div class="wrapper wrapper-content">
-    <form method="post"  action="/member/regist" onsubmit="return fnSave();">
+    <form method="post"  action="/member/regist" onsubmit="return fnSave();" enctype="multipart/form-data">
         <div class="ibox-content m-b-sm border-bottom">
 
             <div class="row">
@@ -109,7 +109,7 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         <label class="control-label">사진</label>
-                        <input type="file" id="file" name="file" class="form-control">
+                        <input type="file" id="photo" name="photo" class="form-control">
                     </div>
                 </div>
             </div>

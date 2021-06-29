@@ -6,6 +6,19 @@ var db = require("../models/index");
 var Member = db.Member;
 var bcrypt = require('bcryptjs');
 
+var multer = require('multer');
+//var upload = multer({dest:'public/upload/'});
+
+var storage  = multer.diskStorage({ 
+    destination(req, file, cb) {
+      cb(null, 'public/upload/');
+    },
+    filename(req, file, cb) {
+      cb(null, `${Date.now()}__${file.originalname}`);
+    },
+  });
+  var upload = multer({ storage: storage });
+  
 
 //JWT토큰 발급 폼 페이지(MVC)
 //localhost:3000/member/form
@@ -116,7 +129,13 @@ router.get('/regist',async(req,res)=>{
 
 
 //회원가입
-router.post('/regist', async(req,res)=>{
+router.post('/regist', upload.single('photo'), async(req,res)=>{
+    //여러개 저장시 single >> array
+
+    var uploadedfile = req.file;
+    console.log("업로드된 파일이름",uploadedfile);
+
+    let uploadFilePath = "/upload/" + uploadedfile.filename;
 
     //난독화 및 복화 불가능한 해시코드로 생성하여 db에 저장
     const hashPwd = await bcrypt.hash(req.body.userpwd,12);
@@ -129,7 +148,7 @@ router.post('/regist', async(req,res)=>{
         snsid:req.body.snsid,
         username:req.body.username,
         telephone:req.body.telephone,
-        photo:req.body.file,
+        photo:uploadFilePath,
         lastip:req.ip,
         usertpye:req.body.usertpye,
         userstate:req.body.userstate,        
@@ -149,26 +168,42 @@ router.post('/regist', async(req,res)=>{
  });
 
 
- //회원정보 수정페이지 열기
- router.get('/modify/:id',async(req,res)=>{
+//회원정보 수정
+router.post('/modify/enter', async(req,res)=>{
 
-    //조회하려는 게시글 고유번호 추출
-    const userIdx = req.params.id;
+     //사용자 아이디/암호를 호출한곳에서 받아온다.
+     const userIdx = req.body.id;
 
-    const member = await Member.findOne({where:{id:userIdx}});
+     //메일주소와 동일한 사용자 정보조회
+     const member = await Member.findOne({where:{id:userIdx}});
 
-    console.log(member);
-    
-    return res.render("member/modify",{data:member});
 
-  
+     //난독화 및 복화 불가능한 해시코드로 생성하여 db에 저장
+     const result = await bcrypt.compare(req.body.userpwd, member.userpwd);
+ 
+ 
+     if(result == true){
+         
+         return res.render("member/modify",{data:member});
+     }else{
+
+         return res.render("member/modify/enter/"+userIdx);
+     }
+
+
 });
 
 //회원정보 수정
-router.post('/modify', async(req,res)=>{
+router.post('/modify', upload.single('photo'), async(req,res)=>{
 
     //난독화 및 복화 불가능한 해시코드로 생성하여 db에 저장
     const hashPwd = await bcrypt.hash(req.body.userpwd,12);
+
+    var uploadedfile = req.file;
+    console.log("업로드된 파일이름",uploadedfile);
+
+    let uploadFilePath = "/upload/" + uploadedfile.filename;
+
 
     try{
         const updatedId = await Member.update({
@@ -179,7 +214,7 @@ router.post('/modify', async(req,res)=>{
                 snsid:req.body.snsid,
                 username:req.body.username,
                 telephone:req.body.telephone,
-                photo:req.body.file,
+                photo:uploadFilePath,
                 lastip:req.ip,
                 usertpye:req.body.usertpye,
                 userstate:req.body.userstate,        
@@ -199,7 +234,36 @@ router.post('/modify', async(req,res)=>{
         return res.json({code:"500", data:0, msg:"서버에러발생"})
     }
 
-    });
+});
+
+
+//회원정보 수정 비밀번화 확인 페이지 열기
+router.get('/modify/enter/:id',async(req,res)=>{
+
+    //조회하려는 게시글 고유번호 추출
+    const userIdx = req.params.id;
+    
+    return res.render("member/enter",{data:userIdx});
+
+  
+});
+
+/*
+//회원정보 수정페이지 열기
+router.get('/modify/:id',async(req,res)=>{
+
+    //조회하려는 게시글 고유번호 추출
+    const userIdx = req.params.id;
+
+    const member = await Member.findOne({where:{id:userIdx}});
+
+    console.log(member);
+    
+    return res.render("member/modify",{data:member});
+
+  
+});
+*/
 
 //회원정보 삭제 후 페이지 이동
 router.get('/delete/:id', async(req,res)=>{
