@@ -143,46 +143,72 @@ router.post('/regist', async(req,res)=>{
 
     //DB에 해당 데이터를 저장하고 결과를 다시 받아옴
     var savedMember = await Member.create(member);
-     
+    
 
     res.redirect("/member/list");
  });
 
 
  //회원정보 수정페이지 열기
- router.get('/modify',async(req,res)=>{
-    res.render("member/regist");
-});
+ router.get('/modify/:id',async(req,res)=>{
 
+    //조회하려는 게시글 고유번호 추출
+    const userIdx = req.params.id;
+
+    const member = await Member.findOne({where:{id:userIdx}});
+
+    console.log(member);
+    
+    return res.render("member/modify",{data:member});
+
+  
+});
 
 //회원정보 수정
 router.post('/modify', async(req,res)=>{
 
-    res.render("member/list");
- });
-
-
-//회원정보 삭제 후 페이지 이동
-router.post('/delete/:id', async(req,res)=>{
-
-    res.render("member/list");
- });
-
-
-router.get('/modify/:id',async(req,res)=>{
-    
-    //조회하려는 게시글 고유번호 추출
-    const userIdx = req.params.id;
+    //난독화 및 복화 불가능한 해시코드로 생성하여 db에 저장
+    const hashPwd = await bcrypt.hash(req.body.userpwd,12);
 
     try{
-        const member = await Member.findOne({where:{id:userIdx}});
-        console.log(member);
-        return res.json({code:200,data:member,msg:"OK"});
-
-    }catch(error){
-        return res.json({code:500,data:{},msg:"서버에러발생 관리자에게 문의바람"});
+        const updatedId = await Member.update({
+                email:req.body.email,
+                userpwd:hashPwd,
+                nickname:req.body.nickname,
+                entrytype:req.body.entrytype,
+                snsid:req.body.snsid,
+                username:req.body.username,
+                telephone:req.body.telephone,
+                photo:req.body.file,
+                lastip:req.ip,
+                usertpye:req.body.usertpye,
+                userstate:req.body.userstate,        
+                updateduid:1
+        },{
+            where:{id:req.body.id}
+        });
+        if(updatedId == 1){
+            return res.redirect("/member/list")
+        }else{
+            console.log("update 구문 실행, but 데이터 실행안됨");
+            return res.json("/member/list",{code:"500", data:updatedId, msg:"API실행, 데이터 수정안됨"})
+        }
+        
+    }catch(err){
+        
+        return res.json({code:"500", data:0, msg:"서버에러발생"})
     }
 
-});
+    });
+
+//회원정보 삭제 후 페이지 이동
+router.get('/delete/:id', async(req,res)=>{
+
+    var userIdx = req.params.id;
+
+    var deletedCnt = await Member.destroy({where:{id:userIdx}});
+    res.redirect("/member/list");
+ });
+
 
 module.exports = router;

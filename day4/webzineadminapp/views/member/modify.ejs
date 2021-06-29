@@ -5,105 +5,177 @@
     <title>회원정보 수정</title>
 </head>
 <body>
-    
-    <form method="POST" action="/member/modify" enctype="multipart/form-data">
-        <table>
-            <colgroup>
-                <col style="width: 20%">
-                <col style="width: 80%">
-            </colgroup>
-            <tr>
-                <td>메일주소</td>
-                <td><input type="text" id="email"><%=member.email%></td>
-            </tr>
-           <tr>
-               <td>암호</td>
-               <td><input type="password" name="userpwd" id="userpwd"></td>
-           </tr>
-           <tr>
-                <td>닉네임</td>
-                <td><input type="text" name="nickname" id="nickname"><%=member.nickname%></td>
-            </tr>
-            <tr>
-                <td>가입유형</td>
-                <td>
-                    <select name="entrytype" id="entrytype">
-                        <option value="0" <% if(member.entrytype == 0){ %> selected <% } %>>직접가입</option>
-                        <option value="1" <% if(member.entrytype == 1){ %> selected <% } %>>sns가입</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>sns 아이디</td>
-                <td><input type="text" name="snsid" id="snsid"><%=member.snsid%></td>
-            </tr>
-            <tr>
-                <td>실명</td>
-                <td><input type="text" name="username" id="username"><%=member.username%></td>
-            </tr>
-            <tr>
-                <td>전화번호</td>
-                <td><input type="text" name="telephone" id="telephone"><%=member.telephone%></td>
-            </tr>
-            <tr>
-                <td>사진</td>
-                <td><input type="file" name="photo" id="photo"></td>
-            </tr>
-            <tr>
-                <td>가입유형</td>
-                <td>
-                    <select name="usertpye" id="usertpye">
-                        <option value="0"  <% if(member.usertpye == 0){ %> selected <% } %>>일반회원</option>
-                        <option value="1"  <% if(member.usertpye == 1){ %> selected <% } %>>관리자</option>
-                    </select>
-                </td>
-            </tr>       
-        </table>
-        <input type="button" value="회원정보수정" id="btnmodify">
-    </form>
+      <!--우측 콘텐츠 헤더영역 -->
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>게시글등록</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home/Index">Home</a>
+            </li>
+            <li>
+                <a>게시글정보관리</a>
+            </li>
+            <li class="active">
+                <strong>등록</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
 
- 
+<!--우측 콘텐츠 영역 -->
+<div class="wrapper wrapper-content">
+    <form method="post"  action="/member/modify" onsubmit="return fnSave();">
+        <div class="ibox-content m-b-sm border-bottom">
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">메일주소</label>
+                        <input type="text" id="email" name="email" class="form-control" value="<%=data.email%>">
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">닉네임</label>
+                        <input type="text" id="nickname" name="nickname" class="form-control"value="<%=data.nickname%>">
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">sns 아이디</label>
+                        <input type="text" id="snsid" name="snsid" class="form-control" value="<%=data.snsid%>">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">암호</label>
+                        <input type="password" id="userpwd" name="userpwd" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">실명</label>
+                        <input type="text" id="username" name="username" class="form-control" value="<%=data.username%>">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">전화번호</label>
+                        <input type="text" id="telephone" name="telephone" class="form-control" value="<%=data.telephone%>">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">가입유형</label>
+                        <select name="entrytype" id="entrytype" class="form-control">
+                            <option value="0"<% if(data.entrytype == 0){ %> selected <% } %>>직접가입</option>
+                            <option value="1" <% if(data.entrytype == 1){ %> selected <% } %>>sns가입</option>
+                        </select>
+                    </div>
+                </div>
+            
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">회원유형</label>
+                        <select name="usertpye" id="usertpye" class="form-control">
+                            <option value="0" <% if(data.usertpye == 0){ %> selected <% } %>>일반회원</option>
+                            <option value="1" <% if(data.usertpye == 1){ %> selected <% } %>>관리자</option>
+                        </select>
+                    </div>
+                </div>
+           
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">가입상태</label>
+                        <select name="userstate" id="userstate" class="form-control">
+                            <option value="0">탈퇴</option>
+                            <option value="1" selected>사용중</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="control-label">사진</label>
+                        <input type="file" id="file" name="file" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <input type="submit" class="btn btn-primary" id="btnjoin" value="회원정보수정"/>
+                <a href="/article/list" class="btn btn-info">목록</a>
+            </div>
+            <input type="hidden" name="id" value="<%=data.id%>">
+        </div>
+</form>
 
         <script>
 
-            //url에서 쿼리스트링 키의 값을 추출해서 반환
-            function urlParam(name){
-                var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-                if (results==null){
-                    return null;
+            function fnSave(){
+                if($("#email").val() ==""){
+                    alert("메일주소를 입력해주세요.");
+                    $("#email").focus();
+                    return false;
                 }
-                else{
-                    return results[1] || 0;
+                if($("#nickname").val() ==""){
+                    alert("닉네임을 입력해주세요.");
+                    $("#nickname").focus();
+                    return false;
                 }
+                if($("#snsid").val() ==""){
+                    alert("sns 아이디를 입력해주세요.");
+                    $("#snsid").focus();
+                    return false;
+                }
+                if($("#userpwd").val() ==""){
+                    alert("암호를 입력해주세요.");
+                    $("#userpwd").focus();
+                    return false;
+                }
+                if($("#username").val() ==""){
+                    alert("실명을 입력해주세요.");
+                    $("#username").focus();
+                    return false;
+                }
+                if($("#telephone").val() ==""){
+                    alert("전화번호를 입력해주세요.");
+                    $("#telephone").focus();
+                    return false;
+                }
+
+                if($("#entrytype").val() ==""){
+                    alert("가입유형을 선택해주세요.");
+                    $("#entrytype").focus();
+                    return false;
+                }
+
+                
+                if($("#usertpye").val() ==""){
+                    alert("회원유형을 선택해주세요.");
+                    $("#usertpye").focus();
+                    return false;
+                }
+
+                if($("#file").val() ==""){
+                    alert("파일을 등록해주세요.");
+                    $("#file").focus();
+                    return false;
+                }
+                
             }
-
-            $(document).ready(function(){
-
-                //현재 페이지 URL에서 id값을 추출한다.
-                var userIdx = urlParam("id");
-
-                console.log("아이디 키값:",userIdx);
-
-                //백엔드 단일 게시글 정보조회 API호출
-                $.get("http://localhost:3000/member/modify/"+userIdx,function(res){
-                    
-                    console.log("단일 게시글정보:",res.data);
-
-                    if(res.code == "200"){
-                        $("#userIdx").val(res.data.id);
-                        $("#email").val(res.data.email);
-                        $("#nickname").val(res.data.nickname);
-                        $("#entrytype").val(res.data.entrytype == "1" ? "1":"0");
-                        $("#snsid").val(res.data.snsid);
-                        $("#username").val(res.data.username);
-                        $("#telephone").val(res.data.telephone);
-                        $("#usertpye").val(res.data.usertpye == true ? "1":"0");
-                    }else{
-                        alert("API 호출에러발생:"+res.msg);
-                    }
-                });
-            });
-
+/*
             $("#btnmodify").click(function(){
 
                 var joinUser={
@@ -134,7 +206,7 @@
                     }
                 });
             });
-   
+   */
         </script>
 
 </body>
