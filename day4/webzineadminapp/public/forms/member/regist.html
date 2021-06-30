@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>신규회원 등록</title>
+</head>
+<body>
+    <!--우측 콘텐츠 헤더영역 -->
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>게시글등록</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home/Index">Home</a>
+            </li>
+            <li>
+                <a>게시글정보관리</a>
+            </li>
+            <li class="active">
+                <strong>등록</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+
+<!--우측 콘텐츠 영역 -->
+<div class="wrapper wrapper-content">
+        <div class="ibox-content m-b-sm border-bottom">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">메일주소</label>
+                        <input type="text" id="email" name="email" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">닉네임</label>
+                        <input type="text" id="nickname" name="nickname" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">sns 아이디</label>
+                        <input type="text" id="snsid" name="snsid" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">암호</label>
+                        <input type="password" id="userpwd" name="userpwd" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">실명</label>
+                        <input type="text" id="username" name="username" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">전화번호</label>
+                        <input type="text" id="telephone" name="telephone" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">가입유형</label>
+                        <select name="entrytype" id="entrytype" class="form-control">
+                            <option value="">선택</option>
+                            <option value="0">직접가입</option>
+                            <option value="1">sns가입</option>
+                        </select>
+                    </div>
+                </div>
+            
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">회원유형</label>
+                        <select name="usertpye" id="usertpye" class="form-control">
+                            <option value="0">일반회원</option>
+                            <option value="1">관리자</option>
+                        </select>
+                    </div>
+                </div>
+           
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">가입상태</label>
+                        <select name="userstate" id="userstate" class="form-control">
+                            <option value="0">탈퇴</option>
+                            <option value="1" selected>사용중</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="control-label">사진</label>
+                        <input type="file" id="photo" name="photo" class="form-control">
+                    </div>
+                </div>
+            </div>
+            
+            <input type="hidden" id="uploadFilePath" >
+
+            <div class="text-center">
+                <input type="submit" class="btn btn-primary" id="btnjoin" value="회원가입"/>
+                <a href="./member-list.html" class="btn btn-info">목록</a>
+            </div>
+        </div>
+
+</div>
+
+
+        <!--Jquery 라이브러리 참조 -->
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+
+        <script>
+        $("#email").focus();
+
+        $("#btnjoin").click(function(){
+
+            if($("#email").val() ==""){
+                alert("메일주소를 입력해주세요.");
+                $("#email").focus();
+                return false;
+            }
+            if($("#nickname").val() ==""){
+                alert("닉네임을 입력해주세요.");
+                $("#nickname").focus();
+                return false;
+            }
+            if($("#snsid").val() ==""){
+                alert("sns 아이디를 입력해주세요.");
+                $("#snsid").focus();
+                return false;
+            }
+            if($("#userpwd").val() ==""){
+                alert("암호를 입력해주세요.");
+                $("#userpwd").focus();
+                return false;
+            }
+            if($("#username").val() ==""){
+                alert("실명을 입력해주세요.");
+                $("#username").focus();
+                return false;
+            }
+            if($("#telephone").val() ==""){
+                alert("전화번호를 입력해주세요.");
+                $("#telephone").focus();
+                return false;
+            }
+            if($("#entrytype").val() ==""){
+                alert("가입유형을 선택해주세요.");
+                $("#entrytype").focus();
+                return false;
+            }
+            if($("#usertpye").val() ==""){
+                alert("회원유형을 선택해주세요.");
+                $("#usertpye").focus();
+                return false;
+            }
+            if($("#photo").val() ==""){
+                alert("사진을 등록해주세요.");
+                $("#photo").focus();
+                return false;
+            }
+
+            var joinUser={
+                "email":$("#email").val(),
+                "nickname":$("#nickname").val(),
+                "snsid":$("#snsid").val(),
+                "userpwd":$("#userpwd").val(),
+                "username":$("#username").val(),
+                "telephone":$("#telephone").val(),
+                "entrytype":$("#entrytype").val(),
+                "usertpye":$("#usertpye").val(),
+                "userstate":$("#userstate").val(),
+                "photo":$("#uploadFilePath").val()
+            };
+
+            $.ajax({
+                url:"http://localhost:3000/api/member/regist",
+                type:"POST",
+                data:joinUser,
+                success:function(res){
+
+                    if(res.code =="200"){
+                        alert("회원가입 완료");
+                        location.href="./list.html";
+
+                    }else{
+                        alert("회원가입 실패");
+                    }
+                }
+            });
+        });
+
+        $("#photo").change(function(){
+            //첨부파일이 선택변경 발생하면
+            //alert("파일선택이 변경됨");
+
+            //폼데이터를 생성하고 파일 데이터 정보를 추가한다.
+            //해당 폼데이터를 post 방식으로  백엔드 API에 전송한다.
+
+            var data = new FormData();
+            data.append("photo",$("input[name=photo]")[0].files[0]);
+
+            $.ajax({
+                data : data,
+                contentType : false,
+                processData : false,
+                type:"post",
+                url:'http://localhost:3000/api/member/upload',
+                success:function(res){
+                    console.log("업로드파일경로: ",res);
+                    
+                    $("#uploadFilePath").val(res);
+                }
+            });
+        });
+        </script>
+
+</body>
+</html>

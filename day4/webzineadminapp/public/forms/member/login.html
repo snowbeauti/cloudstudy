@@ -1,0 +1,53 @@
+
+
+<html>
+    <head>
+        <title>로그인폼-프론트엔드</title>
+    </head>
+    <body>
+        <form>
+            아이디:<input type="text" id="userId"><br/>
+            암호: <input type="password" id="userPwd"><br/>
+            <input type="button" id="btnLogin" value="로그인">
+        </form>
+    
+    
+        <!--Jquery 라이브러리 참조 -->
+        <script src="/js/jquery-3.6.0.min.js"></script>
+        
+        <script>
+    
+            $("#btnLogin").click(function(){
+    
+                    var loginUser={
+                        "userId":$("#userId").val(),
+                        "userPwd":$("#userPwd").val()
+                    };
+    
+                    $.ajax({
+                    url:"http://localhost:3000/member/login",
+                    type:"POST",
+                    data:loginUser,
+                    success:function(res){
+    
+                        console.log(res);
+    
+                        if(res.code =="200"){
+                            alert(res.msg);
+    
+                            //사용자 브라우저에 Local Storage영역에 서버에서 발급받은 토큰을 저장한다.
+                            localStorage.setItem('jsonwebtoken', res.data);
+                            //localStorage.getItem('foo'); //--> "bar"
+    
+                            //location.href ="./list.html";
+                        }else{
+                            alert("에러발생");
+                        }
+                    }
+                });
+            });
+    
+        </script>
+    
+    </body>
+    </html>

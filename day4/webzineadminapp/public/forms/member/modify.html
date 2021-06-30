@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>회원정보 수정</title>
+</head>
+<!DOCTYPE html>
+<html>
+<body>
+    <!--우측 콘텐츠 헤더영역 -->
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>게시글등록</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home/Index">Home</a>
+            </li>
+            <li>
+                <a>게시글정보관리</a>
+            </li>
+            <li class="active">
+                <strong>등록</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+
+<!--우측 콘텐츠 영역 -->
+<div class="wrapper wrapper-content">
+        <div class="ibox-content m-b-sm border-bottom">
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">메일주소</label>
+                        <input type="text" id="email" name="email" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">닉네임</label>
+                        <input type="text" id="nickname" name="nickname" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">sns 아이디</label>
+                        <input type="text" id="snsid" name="snsid" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">암호</label>
+                        <input type="password" id="userpwd" name="userpwd" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">실명</label>
+                        <input type="text" id="username" name="username" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">전화번호</label>
+                        <input type="text" id="telephone" name="telephone" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">가입유형</label>
+                        <select name="entrytype" id="entrytype" class="form-control">
+                            <option value="">선택</option>
+                            <option value="0">직접가입</option>
+                            <option value="1">sns가입</option>
+                        </select>
+                    </div>
+                </div>
+            
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">회원유형</label>
+                        <select name="usertpye" id="usertpye" class="form-control">
+                            <option value="0">일반회원</option>
+                            <option value="1">관리자</option>
+                        </select>
+                    </div>
+                </div>
+           
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">가입상태</label>
+                        <select name="userstate" id="userstate" class="form-control">
+                            <option value="0">탈퇴</option>
+                            <option value="1" selected>사용중</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="control-label">사진</label>
+                        <input type="file" id="photo" name="photo" class="form-control">
+                        <img src="<%=data.photo%>" style="width: 300px;">
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" id="userid">
+            <div class="text-center">
+                <input type="submit" class="btn btn-primary" id="btnjoin" value="정보수정"/>
+                <a href="./list.html" class="btn btn-info">목록</a>
+            </div>
+        </div>
+
+</div>
+
+
+        <!--Jquery 라이브러리 참조 -->
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+
+        <script>
+
+            function urlParam(id){
+                var results = new RegExp('[\?&]' + id + '=([^&#]*)').exec(window.location.href);
+                if (results==null){
+                    return null;
+                }
+                else{
+                    return results[1] || 0;
+                }
+            }
+
+        $(document).ready(function(){
+
+            //현재 페이지 URL에서 id값을 추출한다.
+            var userIdx = urlParam("id");
+
+            console.log("아이디 키값:",userIdx);
+
+            //백엔드 단일 게시글 정보조회 API호출
+            $.get("http://localhost:3000/api/member/modify/"+userIdx,function(res){
+
+                console.log("단일 게시글정보:",res.data);
+
+                if(res.code == "200"){
+                    $("#userid").val(res.data.id);
+                    $("#email").val(res.data.email);
+                    $("#nickname").val(res.data.nickname);
+                    $("#snsid").val(res.data.snsid);
+                    $("#username").val(res.data.username);
+                    $("#photo").val(res.data.photo);
+                    $("#telephone").val(res.data.telephone);
+                    $("#entrytype").val(res.data.entrytype == "1" ? "1":"0");
+                    $("#usertpye").val(res.data.usertpye == "1" ? "1":"0");
+                    $("#userstate").val(res.data.userstate == "1" ? "1":"0");
+                }else{
+                    alert("API 호출에러발생:"+res.msg);
+                }
+            });
+        });
+
+        $("#btnjoin").click(function(){
+            
+            if($("#email").val() ==""){
+                alert("메일주소를 입력해주세요.");
+                $("#email").focus();
+                return false;
+            }
+            if($("#nickname").val() ==""){
+                alert("닉네임을 입력해주세요.");
+                $("#nickname").focus();
+                return false;
+            }
+            if($("#snsid").val() ==""){
+                alert("sns 아이디를 입력해주세요.");
+                $("#snsid").focus();
+                return false;
+            }
+            if($("#userpwd").val() ==""){
+                alert("암호를 입력해주세요.");
+                $("#userpwd").focus();
+                return false;
+            }
+            if($("#username").val() ==""){
+                alert("실명을 입력해주세요.");
+                $("#username").focus();
+                return false;
+            }
+            if($("#telephone").val() ==""){
+                alert("전화번호를 입력해주세요.");
+                $("#telephone").focus();
+                return false;
+            }
+            if($("#entrytype").val() ==""){
+                alert("가입유형을 선택해주세요.");
+                $("#entrytype").focus();
+                return false;
+            }     
+            if($("#usertpye").val() ==""){
+                alert("회원유형을 선택해주세요.");
+                $("#usertpye").focus();
+                return false;
+            }
+            if($("#photo").val() ==""){
+                alert("사진을 등록해주세요.");
+                $("#photo").focus();
+                return false;
+            }
+
+            var user={
+                "id":$("#userid").val(),
+                "email":$("#email").val(),
+                "nickname":$("#nickname").val(),
+                "snsid":$("#snsid").val(),
+                "userpwd":$("#userpwd").val(),
+                "username":$("#username").val(),
+                "telephone":$("#telephone").val(),
+                "entrytype":$("#entrytype").val(),
+                "usertpye":$("#usertpye").val(),
+                "userstate":$("#userstate").val(),
+                "photo":$("#photo").val()
+            };
+
+
+            $.ajax({
+                url:"http://localhost:3000/api/member/modify",
+                type:"put",
+                data:user,
+                success:function(res){
+
+                    console.log(res);
+
+                    if(res.code =="200"){
+                        alert(res.msg);
+                        location.href ="./list.html";
+                    }else{
+                        alert("에러발생");
+                    }
+                }
+            });
+        });
+
+        </script>
+
+</body>
+</html>

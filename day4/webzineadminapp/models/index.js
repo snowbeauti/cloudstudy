@@ -22,6 +22,9 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 db.Config = config;
 
+//forign Key 연결
+//db.Article.hasMany(db.ArticleFile,{foreignKey:'articleid', sourceKey:'id'});
+//db.ArticleFile.belongsTo(db.Article,{foreignKey:'articleid, targetKey:'id'});
 
 //각종 모델 클래스를 db객체와 속성으로 노출해줘 Route에서
 //해당 모델들을 접근하고 사용할 수 있는 환경을 제공한다.

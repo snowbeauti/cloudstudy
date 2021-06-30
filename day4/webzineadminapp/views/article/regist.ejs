@@ -20,7 +20,7 @@
 
 <!--우측 콘텐츠 영역 -->
 <div class="wrapper wrapper-content">
-    <form method="post"  action="/article/regist" onsubmit="return fnSave();">
+    <form method="post"  action="/article/regist" enctype="multipart/form-data">
                 <div class="ibox-content m-b-sm border-bottom">
 
                     <div class="row">
@@ -36,7 +36,9 @@
                         <div class="col-sm-12">
                             <div class="form-group">
                                 <label class="control-label">글내용</label>
-                                <textarea id="contents" name="contents" class="form-control" rows="10" cols="5"></textarea>
+                                <!--<textarea id="contents" name="contents" class="form-control" rows="10" cols="5"></textarea>-->
+                                <div class="summernote" id="summernote"></div>
+                                <input type="hidden" name="contents" id="contents" >
                             </div>
                         </div>
                     </div>
@@ -76,21 +78,55 @@
     </form>
 </div>
 
+<script src="/summernote/summernote.min.js"></script>
+<script src="/summernote/summernote-ko-KR.js"></script>
 
 <script>
+    $(document).ready(function () {
+        $('.summernote').summernote({
+            height: 500,
+            minHeight: 250,
+            maxHeight: 700,
+            focus: false,
+            lang: 'ko-KR',
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['paragraph']],
+                ['height', ['height']],
+                ['insert', ['picture', 'link', 'video']],
+                ['Misc', ['fullscreen', 'codeview', 'undo']]
+            ],
+            onImageUpload: function (files, editor, welEditable) {
+                sendFile(files[0], editor, welEditable);
+            }
+        });
 
+
+        
+        //SummerNote 이미지 첨부기능
+        function sendFile(file, editor, welEditable) {
+                data = new FormData();
+                data.append("file", file);
+                $.ajax({
+                    data: data,
+                    type: "POST",
+                    url: '/article/upload',
+                    contentType: false,
+                    processData: false,
+                    success: function (url) {
+                        console.log("파일업로드경로",url);
+                        editor.insertImage(welEditable, url);
+                    }
+                });
+            }
     
 
-    //게시글 정보 유효성 검사 함수
-    function fnSave(){
 
-        if(document.getElementById("title").value == ""){
-            alert("글제목을 입력해주세요.");
-            document.getElementById("title").focus();
-            return false;
-        }
+    });
 
-        return true;
-    }
+
 </script>
 

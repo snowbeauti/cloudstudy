@@ -158,12 +158,9 @@ router.post('/regist', upload.single('photo'), async(req,res)=>{
 
     console.log(member);
 
-
-
     //DB에 해당 데이터를 저장하고 결과를 다시 받아옴
     var savedMember = await Member.create(member);
     
-
     res.redirect("/member/list");
  });
 

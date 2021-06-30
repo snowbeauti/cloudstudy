@@ -10,6 +10,22 @@ const { Board, Article } = require('../models');
 //라우팅 객체는 사용자 요청 URL에 대한 처리를 담당하는 각종 기능을 제공한다.
 var router = express.Router();
 
+var bcrypt = require('bcryptjs');
+
+var multer = require('multer');
+//var upload = multer({dest:'public/upload/'});
+
+var storage  = multer.diskStorage({ 
+    destination(req, file, cb) {
+      cb(null, 'public/upload/');
+    },
+    filename(req, file, cb) {
+      cb(null, `${Date.now()}__${file.originalname}`);
+    },
+  });
+  var upload = multer({ storage: storage });
+
+
 //라우팅객체를 이용해 get 방식 호출 라우팅메소드 정의
 //get메소드('사용자가 호출할 url주소',url호출시 실행될 기능(함수)정의)
 //url호출시 실행될 기능(함수)에는 사용자브라우저로부터 전달되는 각종정보(req객체=httprequest객체) 와 
@@ -45,7 +61,6 @@ router.get('/list',function(req,res,next){
         next(err);
     });
 
-
 });
 
 //게시글 등록화면 최초호출시 반환
@@ -59,7 +74,8 @@ router.get('/regist', function(req, res, next) {
 //브라우저에서 post 방식으로 데이터를 전송하는 경우 해당 라우팅메소드가 데이터 수신
 //post('URL주소',처리함수(req,res))
 //사용자가 입력한 게시글 데이터를 DB에 저장하고 결과를 반환한다.
-router.post('/regist',function(req,res){
+router.post('/regist', async(req,res,next)=>{
+
 
     //모델 객체
     var article = { 
@@ -73,13 +89,14 @@ router.post('/regist',function(req,res){
         updateduid:1
     };
 
-    Article.create(article).then((savedArticle)=>{
-        console.log("등록게시글:",savedArticle);
-        return res.redirect("/article/list");
-    }).catch((err)=>{
-        next(err);
-    });
+    console.log("=======article=====",article);
+
+    //DB에 해당 데이터를 저장하고 결과를 다시 받아옴
+    var savedArticle = await Article.create(article);
+
+    return res.redirect("/article/list");
 });
+
 
 
 //게시글 수정 페이지 호출
@@ -216,6 +233,17 @@ router.get('/remove',async(req,res)=>{
     res.redirect("/article/list");
 
 });
+
+
+//파일 업로드 처리
+router.post('/upload', upload.single('file'), async(req,res)=>{
+    const uploadFile = req.file;
+    let uploadFilePath = "/upload/"+uploadFile.filename;
+
+    return res.json(uploadFilePath);
+});
+
+
 
 //삭제
 router.get('/remove/:id',function(req,res){

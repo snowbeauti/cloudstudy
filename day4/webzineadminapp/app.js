@@ -30,6 +30,8 @@ var articleRouter = require('./routes/article.js');
 //게시글정보 제공 API 라우터를 참조한다.
 var articleAPIRouter = require('./routes/articleAPI');
 
+var memberAPIRouter = require('./routes/memberAPI');
+
 //Node Express 웹개발 프레임워크를 이용해 Node App객체를 생성한다.
 //Node app객체를 초기화
 var app = express();
@@ -93,6 +95,7 @@ app.use('/article', articleRouter);
 //게시글 API 라우터 파일 기본주소 정의
 //localhost:3000/api/articles
 app.use('/api/articles', articleAPIRouter);
+app.use('/api/member', memberAPIRouter);
 
 
 //404에러(서버상에 존재하지 않은 리소스를 호출할때 서버에서 제공하는 에러)

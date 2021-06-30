@@ -31,7 +31,7 @@ module.exports = (sequelize,DataTypes)=>{
         },
         photo:{
             type:DataTypes.STRING(100),
-            allowNull:false
+            allowNull:true
         },
         lastip:{
             type:DataTypes.STRING(20),
