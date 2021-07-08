@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trip adviser</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <style>
+    </style>
+    <script src="js/bootstrap.min.js">
+    </script>
+    
+</head>
+<body>
+    <div class="container">
+        <h1 class="display-4 mb-4">여행지 입력</h1>
+        <hr>
+        <div id="output"></div>
+        <form id="submitMessage">
+          <div class="form-group">
+            <input type="text" id="name" class="form-control" placeholder="희망 여행지 입력하세요.">
+          </div>
+          <input type="submit" class="btn btn-secondary" onclick="submitMessage(event)" value="등록">
+        </form>
+    </div>
+    <script>
+        function submitMessage(e) {
+            e.preventDefault();
+        
+            myname = document.getElementById('name').value;
+            fetch('https://fapp-tripadviserjsa.azurewebsites.net/api/SetLocation', {
+                method: 'POST',
+                headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                name: myname
+                })
+            })
+            .then(function(response)
+            {
+                if (response.status === 200) {
+                    response.text().then(text => updateUI(text)); 
+                } else {
+                    updateError();
+                }
+            })
+        }
+        
+        function updateUI(text)
+        {
+            output =
+            `
+            <div class="alert alert-success" role="alert">
+                ${text}
+            </div>        
+            `;
+            document.getElementById('output').innerHTML = output;
+        }
+        function updateError()
+        {
+            output =
+            `
+            <div class="alert alert-danger" role="alert">
+            오류있음 너 뭐 잘못함 :(
+            </div>        
+            `;
+            document.getElementById('output').innerHTML = output;
+        }
+    </script>
+</body>
+</html>

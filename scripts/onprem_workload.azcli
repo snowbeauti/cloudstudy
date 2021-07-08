@@ -1,0 +1,59 @@
+#1. Install NodeJS
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get update
+sudo apt-get install -y nodejs build-essential
+sudo node --version
+
+#2. Install Angular
+sudo npm install -g @angular/cli
+
+#3. GitHub Source Cloning
+git clone https://github.com/microsoft/MCW-Cloud-native-applications.git /home/snow/GitSources
+
+#4. Copy Source
+cp -r /home/snow/GitSources/Hands-on\ lab/lab-files/developer/content-web/ /home/snow/
+cp -r /home/snow/GitSources/Hands-on\ lab/lab-files/developer/content-api/ /home/snow/
+cp -r /home/snow/GitSources/Hands-on\ lab/lab-files/developer/content-init/ /home/snow/
+
+#5. Install Mongo DB for Ubuntu 1804
+#wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+#echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+sudo apt-get update
+sudo apt-get install -y mongodb
+sudo mongod --version
+sudo service mongodb start
+sudo service mongodb status
+
+##Native Ubuntu
+#sudo systemctl start mongod
+#sudo systemctl status mongod
+
+#6. MongoDB에 샘플 데이터 넣기
+sudo npm install --prefix /home/snow/content-init
+sudo node /home/snow/content-init/server.js
+
+#7. MongoDB 샘플 데이터 확인 (터미널에서)
+mongo
+show dbs
+use contentdb
+show collections
+db.speakers.find()
+db.sessions.find()
+quit()
+
+#8. API 서버(content-api) 설정 및 확인
+sudo npm install --prefix /home/snow/content-api
+node /home/snow/content-api/server.js &
+curl http://localhost:3001/speakers
+curl http://localhost:3001/sessions
+
+#9. 프론트 엔드 웹 서버(content-web) 설정 및 확인
+sudo npm install --prefix /home/snow/content-web
+sudo npm run build --prefix /home/snow/content-web 
+node /home/snow/content-web/app.js &
+curl http://localhost:3000
+
+#10. 브라우저에서 확인(3000)
+#11. 웹 서비스 종료
+ps -ef | grep server.js
+kill -9 PID 

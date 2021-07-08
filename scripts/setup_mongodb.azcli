@@ -1,0 +1,52 @@
+#!/bin/bash
+#1. Deploy Linux VM(Ubuntu 20.04 LTS), vmmongodb
+#2. copy PEM file to WSL /home/tony/.ssh
+#3. Adding inbound port for mongodb 27017
+
+#4. Install NodeJS
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get update
+sudo apt-get install -y nodejs build-essential
+
+#5. GitHub Source Cloning
+git clone https://github.com/microsoft/MCW-Cloud-native-applications.git /home/tony/GitSources
+
+#6. Copy Source
+cp -r /home/tony/GitSources/Hands-on\ lab/lab-files/infrastructure/content-init/ /home/tony/
+
+#7. Install Mongo DB for Ubuntu 1804
+#wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+
+#echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+
+#echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+
+sudo apt-get update
+
+#sudo apt-get install -y mongodb-org
+sudo apt-get update
+sudo apt-get install -y mongodb
+sudo mongod --version
+
+#sudo vi /etc/mongod.conf --> BindIP에 사설 IP 추가, "127.0.0.1,10.0.2.4"
+sudo sed -i 's/127.0.0.1/127.0.0.1,10.0.2.4/g' /etc/mongodb.conf
+sudo service mongodb start
+sudo service mongodb status
+
+#sudo systemctl start mongod
+#sudo systemctl status mongod
+#sudo systemctl stop mongod
+
+#8. MongoDB에 샘플 데이터 넣기
+cd /home/tony/content-init
+sudo npm install
+sudo node server.js
+
+#9. MongoDB 샘플 데이터 확인 (터미널에서)
+mongo
+show dbs
+use contentdb
+show collections
+db.speakers.find()
+db.sessions.find()
+quit()
